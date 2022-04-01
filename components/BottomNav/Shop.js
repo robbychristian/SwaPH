@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Searchbar, Headline, Paragraph, Card, Title} from 'react-native-paper';
 import {
@@ -8,19 +8,72 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Keyboard,
+  Modal,
+  ActivityIndicator,
+  Alert,
+  RefreshControl,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/dist/MaterialCommunityIcons';
-import {white} from 'react-native-paper/lib/typescript/styles/colors';
+import {UserContext} from '../../provider/UserProvider';
+import axios from 'axios';
 
 const Shop = () => {
   const [search, setSearch] = useState('');
   const onSearch = query => setSearch(query);
   const navigation = useNavigation();
+  const [tradeItems, setTradeItems] = useState([]);
+  const [tradeImages, setTradeImages] = useState([]);
+  const [auctionItems, setAuctionItems] = useState([]);
+  const [auctionImages, setAuctionImages] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = () => {
+    setLoading(true);
+    axios
+      .get('https://swapph.online/restapi/GetHomePage')
+      .then(response => {
+        setAuctionItems(response.data.Data.auctions);
+        //setAuctionImages(response.data.Data.aimage);
+        setTradeItems(response.data.Data.barters);
+        //setTradeImages(response.data.Data.bimage);
+        //console.log(auctionImages);
+      })
+      .then(response => {
+        setLoading(false);
+      })
+      .catch(e => {
+        setLoading(false);
+        Alert.alert(
+          'Error!',
+          "There's an error fetching the data. Please make sure you have internet connection!",
+        );
+        console.log(e);
+      });
+  };
+  const onRefresh = () => {
+    fetchData();
+  };
+  //* ON MOUNT *//
+  useEffect(() => {
+    fetchData();
+    onRefresh();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <Modal transparent={true} visible={loading}>
+        <View style={styles.modalBackground}>
+          <View style={styles.activityIndicatorWrapper}>
+            <ActivityIndicator animating={loading} color="blue" />
+          </View>
+        </View>
+      </Modal>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         {/* TOP BAR START */}
         <View style={styles.topBar}>
           <Searchbar
@@ -30,7 +83,11 @@ const Shop = () => {
             value={search}
             inputStyle={{fontSize: 13, padding: 5}}
           />
-          <TouchableOpacity style={styles.topButton}>
+          <TouchableOpacity
+            style={styles.topButton}
+            onPress={() => {
+              navigation.push('ChatRoom');
+            }}>
             <Icon name="comment-processing-outline" size={20} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.topButton}>
@@ -114,35 +171,54 @@ const Shop = () => {
               <Paragraph style={{color: '#a8a8a8'}}>See More</Paragraph>
             </TouchableOpacity>
           </View>
-
-          <View style={styles.tradeCardsContainer}>
-            <TouchableOpacity style={{flex: 0.48}}>
-              <Card mode="outlined">
-                <Card.Cover
-                  source={require('../../assets/trade_imgs/tanjiro.jpg')}
-                  style={{width: '100%', height: '80%'}}
-                />
-                <Card.Content
-                  style={{justifyContent: 'center', alignItems: 'center'}}>
-                  <Paragraph style={{color: '#7a7a7a'}}>
-                    Post With Picture
-                  </Paragraph>
-                </Card.Content>
-              </Card>
-            </TouchableOpacity>
-            <TouchableOpacity style={{flex: 0.48}}>
-              <Card mode="outlined">
-                <Card.Cover
-                  source={require('../../assets/trade_imgs/ps5.png')}
-                  style={{width: '100%', height: '80%'}}
-                />
-                <Card.Content
-                  style={{justifyContent: 'center', alignItems: 'center'}}>
-                  <Paragraph style={{color: '#7a7a7a'}}>Post</Paragraph>
-                </Card.Content>
-              </Card>
-            </TouchableOpacity>
-          </View>
+          <ScrollView horizontal={true} style={{height: 200}}>
+            <View style={styles.tradeCardsContainer}>
+              {tradeItems.map((info, id) => {
+                return (
+                  <TouchableOpacity
+                    style={{
+                      flex: 0.48,
+                      marginRight: 10,
+                      maxWidth: '100%',
+                      width: '100%',
+                    }}
+                    onPress={() => {
+                      navigation.navigate('IndividualTrade', {
+                        id: info.BarterID,
+                        title: info.Title,
+                        description: info.Description,
+                        postedDate: info.PostedDate,
+                        isClosed: info.isClosed,
+                        closeReason: info.CloseReason,
+                        closeComment: info.CloseComment,
+                        closeById: info.ClosedByID,
+                        closedDate: info.ClosedDate,
+                        traderId: info.TraderID,
+                      });
+                    }}>
+                    <Card mode="outlined" style={{width: 200, height: 200}}>
+                      <Card.Cover
+                        source={{
+                          uri: 'https://swapph.online/' + info.ImageLink,
+                        }}
+                        style={{width: '100%', height: '75%'}}
+                      />
+                      <Card.Content
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Paragraph
+                          style={{color: '#7a7a7a', textAlign: 'center'}}>
+                          {info.Title}
+                        </Paragraph>
+                      </Card.Content>
+                    </Card>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </ScrollView>
         </View>
         {/* TRADE END */}
 
@@ -163,36 +239,58 @@ const Shop = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.auctionCardsContainer}>
-            <TouchableOpacity style={{flex: 0.48}}>
-              <Card mode="outlined">
-                <Card.Cover
-                  source={require('../../assets/trade_imgs/laptop.jpg')}
-                  style={{width: '100%', height: '80%'}}
-                />
-                <Card.Content
-                  style={{justifyContent: 'center', alignItems: 'center'}}>
-                  <Paragraph style={{color: '#7a7a7a'}}>
-                    Post for Auction
-                  </Paragraph>
-                </Card.Content>
-              </Card>
-            </TouchableOpacity>
-            <TouchableOpacity style={{flex: 0.48}}>
-              <Card mode="outlined">
-                <Card.Cover
-                  source={require('../../assets/trade_imgs/jordan1.png')}
-                  style={{width: '100%', height: '80%'}}
-                />
-                <Card.Content
-                  style={{justifyContent: 'center', alignItems: 'center'}}>
-                  <Paragraph style={{color: '#7a7a7a'}}>
-                    Post for Auction
-                  </Paragraph>
-                </Card.Content>
-              </Card>
-            </TouchableOpacity>
-          </View>
+          <ScrollView horizontal={true} style={{height: 200}}>
+            <View style={styles.auctionCardsContainer}>
+              {auctionItems.map((info, id) => {
+                return (
+                  <TouchableOpacity
+                    style={{
+                      flex: 0.48,
+                      marginRight: 10,
+                      maxWidth: '100%',
+                      width: '100%',
+                    }}
+                    onPress={() => {
+                      navigation.navigate('IndividualAuction', {
+                        id: info.AuctionID,
+                        title: info.Title,
+                        description: info.Description,
+                        postedDate: info.PostedDate,
+                        isClosed: info.isClosed,
+                        closedDate: info.ClosedDate,
+                        EoBDate: info.EoBDate,
+                        askingPrice: info.AskingPrice,
+                        isPaid: info.isPaid,
+                        highestBid: info.HighestBid,
+                        highestBidderId: info.HighestBidderID,
+                        traderId: info.TraderID,
+                        lastUpdateId: info.LastUpdateID,
+                        lastUpdateDate: info.LastUpdateDate,
+                      });
+                    }}>
+                    <Card mode="outlined" style={{width: 200, height: 200}}>
+                      <Card.Cover
+                        source={{
+                          uri: 'https://swapph.online/' + info.ImageLink,
+                        }}
+                        style={{width: '100%', height: '75%'}}
+                      />
+                      <Card.Content
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Paragraph
+                          style={{color: '#7a7a7a', textAlign: 'center'}}>
+                          {info.Title}
+                        </Paragraph>
+                      </Card.Content>
+                    </Card>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </ScrollView>
         </View>
         {/* AUCTION END */}
       </ScrollView>
@@ -287,16 +385,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: '100%',
     width: '100%',
-    marginTop: 10,
     justifyContent: 'space-between',
   },
 
   auctionContainer: {
     flex: 1,
     marginHorizontal: 10,
-    marginVertical: 80,
+    marginBottom: 20,
   },
   auctionTitleContainer: {
+    flex: 0.1,
     flexDirection: 'row',
     marginVertical: 10,
   },
@@ -304,8 +402,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: '100%',
     width: '100%',
-    marginTop: 10,
     justifyContent: 'space-between',
+  },
+
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: '#00000040',
+  },
+  activityIndicatorWrapper: {
+    backgroundColor: '#FFFFFF',
+    height: 50,
+    width: 50,
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
 });
 

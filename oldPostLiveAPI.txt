@@ -1,0 +1,84 @@
+$data = json_decode(file_get_contents('php://input', false));
+        
+        $keys = [$data->_parts[0][0], $data->_parts[1][0], $data->_parts[2][0], $data->_parts[3][0]];
+        $values = [$data->_parts[0][1], $data->_parts[1][1], $data->_parts[2][1], $data->_parts[3][1]];
+        $fileArray = [$data->_parts[0][1]->name, $data->_parts[0][1]->size, $data->_parts[0][1]->tmp_name, $data->_parts[0][1]->type, $data->_parts[0][1]->uri];
+        
+        $newData = array_combine($keys, $values);
+        $_POST = $newData;
+        $_FILES['Thumbnail'] = array($this->input->post('Thumbnail'));
+        $_FILES['Thumbnail']['name'] = $fileArray[0];
+        $_FILES['Thumbnail']['size'] = $fileArray[1];
+        $_FILES['Thumbnail']['tmp_name'] = $fileArray[2];
+        $_FILES['Thumbnail']['type'] = $fileArray[3];
+        $_FILES['Thumbnail']['uri'] = $fileArray[4];
+        if ($this->input->post())
+        {
+            $file_element_name = 'Thumbnail';
+            if ($_FILES['Thumbnail']['name']!= "")
+            {
+                $config['upload_path']   = './uploads/Thumbnails/';
+                $config['allowed_types'] = 'gif|jpg|png|jpeg';
+                $config['max_size']      = 45000;
+                $config['max_width']     = 10000;
+                $config['max_height']    = 10000;
+                $this->load->library('upload', $config);
+                $this->upload->initialize($config);
+                if (!$this->upload->do_upload($file_element_name)) {
+                    $error = array('error' => $this->upload->display_errors());
+                    $path_parts = pathinfo($_FILES["Thumbnail"]["name"]);
+                    $fileName = str_replace(' ', '_', $path_parts['filename']);
+                    $fileName = str_replace('.', '_', $fileName);
+                    $filename = $fileName.'.'.$path_parts['extension'];
+                    $url=base_url()."uploads/Thumbnails/".$filename;
+                    $urlOrig="./uploads/Thumbnails/".$filename;
+                    $title      = $this->input->post('Title');
+                    $description       = $this->input->post('description');
+                    $date = date("Y-m-d H:i:s");
+                    $data=array(
+                        "Title" =>$title,
+                        "User_id"=>$this->input->post('user_id'),
+                        "Description"=>$description,
+                        "Thumbnail" =>$url,
+                        "original_file_name"=>$urlOrig,
+                        "PostedDate"=>$date
+                    );
+                    $query = $this->db->insert('live',$data);
+                    $this->response($_POST);
+                } else {
+                    $this->response($this->input->post('Thumbnail'));
+                }
+            } else {
+                    $this->response('awit');
+            }
+        }
+
+            //$test = $this->input->post();
+            //$origFileName = $_FILES['Thumbnail']['name'];
+            //$fileName  =  $_FILES['Thumbnail']['name'];
+            //$tempPath  =  $_FILES['Thumbnail']['tmp_name'];
+            //$fileSize  =  $_FILES['Thumbnail']['size'];
+            //$_FILES['Thumbnail']['name']=$fileName;
+            //    //$path_parts = pathinfo($_FILES["Thumbnail"]["name"]);
+            //    //$fileName = str_replace(' ', '_', $path_parts['filename']);
+            //    //$fileName = str_replace('.', '_', $fileName);
+            //    //$filename = $fileName.'.'.$path_parts['extension'];
+            //    //$url=base_url()."uploads/Thumbnails/".$filename;
+            //    //$urlOrig="./uploads/Thumbnails/".$filename;
+            //    //$title      = $this->input->post('Title');
+            //    //$description       = $this->input->post('description');
+            //    //$date = date("Y-m-d H:i:s");
+            //    //$data=array(
+            //    //    "Title" =>$title,
+            //    //    "User_id"=>$this->input->post('user_id'),
+            //    //    "Description"=>$description,
+            //    //    "Thumbnail" =>$url,
+            //    //    "original_file_name"=>$urlOrig,
+            //    //    "PostedDate"=>$date
+            //    //);
+            //    //$query = $this->db->insert('live',$data);
+            //}else{
+            //    $this->response('nice');
+            //}
+            
+        

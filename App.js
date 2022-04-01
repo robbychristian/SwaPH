@@ -31,13 +31,22 @@ import Profile from './components/BottomNav/Profile';
 //HOME SCREEN
 import Home from './components/Home';
 
+//SHOP SCREENS
+import IndividualTrade from './components/BottomNav/Shop/IndividualTrade';
+import IndividualAuction from './components/BottomNav/Shop/IndividualAuction';
+import CreateAuction from './components/BottomNav/Shop/CreateAuction';
+import CreateTrade from './components/BottomNav/Shop/CreateTrade';
+
 //LIVESTREAM
 import LiveStream from './components/Livestream/LiveStream';
 import LiveStreamRoom from './components/Livestream/LiveStreamRoom';
+import CreateLiveStream from './components/Livestream/CreateLiveStream';
 
 //BOTTOM NAVIGATION
 import MyAccount from './components/BottomNav/Profile/MyAccount';
 import Report from './components/BottomNav/Profile/Report';
+import ChatRoom from './components/BottomNav/Chat/ChatRoom';
+import Chat from './components/BottomNav/Chat/Chat';
 
 const WelcomeScreen = () => {
   return <Welcome />;
@@ -86,6 +95,18 @@ const LiveStreamRoomScreen = () => {
   return <LiveStreamRoom />;
 };
 
+const CreateLiveStreamScreen = () => {
+  return <CreateLiveStream />;
+};
+
+const ChatRoomScreen = () => {
+  return <ChatRoom />;
+};
+
+const ChatScreen = () => {
+  return <Chat />;
+};
+
 //PROFILE STACK
 const MyAccountScreen = () => {
   return <MyAccount />;
@@ -93,6 +114,23 @@ const MyAccountScreen = () => {
 
 const ReportScreen = () => {
   return <Report />;
+};
+
+//TRADE STACK
+const IndividualTradeScreen = () => {
+  return <IndividualTrade />;
+};
+
+const IndividualAuctionScreen = () => {
+  return <IndividualAuction />;
+};
+
+const CreateAuctionScreen = () => {
+  return <CreateAuction />;
+};
+
+const CreateTradeScreen = () => {
+  return <CreateTrade />;
 };
 
 const WelcomeStack = createNativeStackNavigator();
@@ -116,6 +154,22 @@ const LoginStackScreen = () => {
       <LoginStack.Screen name="Report" component={ReportScreen} />
       <LoginStack.Screen name="LiveStream" component={LiveStreamScreen} />
       <LoginStack.Screen name="LiveStreamRoom" component={LiveStreamRoom} />
+      <LoginStack.Screen
+        name="CreateLiveStream"
+        component={CreateLiveStreamScreen}
+      />
+      <LoginStack.Screen
+        name="IndividualTrade"
+        component={IndividualTradeScreen}
+      />
+      <LoginStack.Screen
+        name="IndividualAuction"
+        component={IndividualAuctionScreen}
+      />
+      <LoginStack.Screen name="CreateAuction" component={CreateAuctionScreen} />
+      <LoginStack.Screen name="CreateTrade" component={CreateTradeScreen} />
+      <LoginStack.Screen name="ChatRoom" component={ChatRoomScreen} />
+      <LoginStack.Screen name="Chat" component={ChatScreen} />
     </LoginStack.Navigator>
   );
 };

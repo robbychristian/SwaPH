@@ -63,12 +63,20 @@ const Home = () => {
           <TouchableOpacity
             style={{
               paddingVertical: 10,
+            }}
+            onPress={() => {
+              setVisible(false);
+              navigation.push('CreateTrade');
             }}>
             <Text>Create Post for Trade</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
               paddingVertical: 10,
+            }}
+            onPress={() => {
+              setVisible(false);
+              navigation.push('CreateAuction');
             }}>
             <Text>Create Post for Auction</Text>
           </TouchableOpacity>
@@ -76,7 +84,10 @@ const Home = () => {
             style={{
               paddingVertical: 10,
             }}
-            onPress={() => navigation.push('LiveStreamRoom')}>
+            onPress={() => {
+              setVisible(false);
+              navigation.push('LiveStreamRoom');
+            }}>
             <Text>Start Live Selling</Text>
           </TouchableOpacity>
         </Surface>

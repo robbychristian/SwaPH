@@ -1,0 +1,754 @@
+{
+	"info": {
+		"_postman_id": "f5b7fc75-3412-4d6d-9d4c-f36907878dfd",
+		"name": "BRO CODE LIVE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register Trader",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "fname",
+							"value": "ritchie",
+							"type": "text"
+						},
+						{
+							"key": "lname",
+							"value": "dy",
+							"type": "text"
+						},
+						{
+							"key": "bday",
+							"value": "1997-08-10",
+							"type": "text"
+						},
+						{
+							"key": "street",
+							"value": "blk 27 lot 15",
+							"type": "text"
+						},
+						{
+							"key": "brgy",
+							"value": "san isidro",
+							"type": "text"
+						},
+						{
+							"key": "city",
+							"value": "sucat",
+							"type": "text"
+						},
+						{
+							"key": "region",
+							"value": "paranaque",
+							"type": "text"
+						},
+						{
+							"key": "zip",
+							"value": "1126",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "test6@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "contact",
+							"value": "09983898992",
+							"type": "text"
+						},
+						{
+							"key": "pass",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "valid_id",
+							"type": "file",
+							"src": "/C:/Users/MSIUSER/Downloads/CamScanner 10-21-2021 12.09.jpg"
+						},
+						{
+							"key": "photo_with_id",
+							"type": "file",
+							"src": "/C:/Users/MSIUSER/Downloads/CamScanner 10-21-2021 12.09.jpg"
+						},
+						{
+							"key": "usertype",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/RegisterTrader",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"RegisterTrader"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register Employee",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "fname",
+							"value": "ritchie",
+							"type": "text"
+						},
+						{
+							"key": "lname",
+							"value": "dy",
+							"type": "text"
+						},
+						{
+							"key": "Username",
+							"value": "admin3",
+							"type": "text"
+						},
+						{
+							"key": "Password",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "UserType",
+							"value": "3",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/RegisterEmployee",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"RegisterEmployee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "admin3",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/Login",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"Login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send Message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "message",
+							"value": "test123",
+							"type": "text"
+						},
+						{
+							"key": "receiverID",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "senderID",
+							"value": "3",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/SendMessage",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"SendMessage"
+					],
+					"query": [
+						{
+							"key": "senderID",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "receiverID",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "message",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Trader Feedback",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/GetTradeFeedbacksByID/7",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"GetTradeFeedbacksByID",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Trader Posts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/GetTradePostByID/1",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"GetTradePostByID",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Profile By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://swapph.online/Restapi/GetUserProfileByID/1",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"Restapi",
+						"GetUserProfileByID",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Categories",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/GetCategories",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"GetCategories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Home Page",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/GetHomePage",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"GetHomePage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Auctions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/GetAllAuctions",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"GetAllAuctions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get AllBarters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/GetAllBarters",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"GetAllBarters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Messages",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "chat_ID",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "message_ids[0]",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "message_ids[1]",
+							"value": "2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/GetMessages",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"GetMessages"
+					],
+					"query": [
+						{
+							"key": "chat_ID",
+							"value": "9",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Unread Messages Count",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "userID",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/GetMessagesTotalCount",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"GetMessagesTotalCount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Place bid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "userID",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "postID",
+							"value": "27",
+							"type": "text"
+						},
+						{
+							"key": "bid",
+							"value": "200",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/PlaceBid",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"PlaceBid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Auction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "test ngayon 710",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "itemname",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "itemcategory",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "itemdetails",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "itemimage[0]",
+							"type": "file",
+							"src": "/C:/Users/MSIUSER/Desktop/155839365_5268760179861477_349797512723681452_n.jpg"
+						},
+						{
+							"key": "itemimage[1]",
+							"type": "file",
+							"src": "/C:/Users/MSIUSER/Desktop/155839365_5268760179861477_349797512723681452_n.jpg"
+						},
+						{
+							"key": "userID",
+							"value": "2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/PostAuction",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"PostAuction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Barter",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "itemname",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "itemcategory",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "itemdetails",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "itemimage[0]",
+							"type": "file",
+							"src": "/C:/Users/MSIUSER/Desktop/155839365_5268760179861477_349797512723681452_n.jpg"
+						},
+						{
+							"key": "itemimage[1]",
+							"type": "file",
+							"src": "/C:/Users/MSIUSER/Desktop/155839365_5268760179861477_349797512723681452_n.jpg"
+						},
+						{
+							"key": "userID",
+							"value": "2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/PostBarter",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"PostBarter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Post Details By ID",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "post_id",
+							"value": "54",
+							"type": "text"
+						},
+						{
+							"key": "type",
+							"value": "barter",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/GetPost",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"GetPost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate JWT Watch",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "live_id",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "user_id",
+							"value": "3",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/GenerateWatchJWT",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"GenerateWatchJWT"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate JWT Broadcast",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://swapph.online/SwapPH/restapi/GenerateBroadcastJWT",
+					"protocol": "https",
+					"host": [
+						"swapph",
+						"online"
+					],
+					"path": [
+						"SwapPH",
+						"restapi",
+						"GenerateBroadcastJWT"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

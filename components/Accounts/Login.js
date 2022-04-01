@@ -8,6 +8,8 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   Alert,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -23,6 +25,7 @@ function Login() {
   //form
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
 
@@ -35,11 +38,12 @@ function Login() {
     if (email == '' || pass == '') {
       Alert.alert('Invalid Input!', 'Please input your email and password!');
     } else {
+      setLoading(true);
       const formData = new FormData();
       formData.append('username', email);
       formData.append('password', pass);
       axios
-        .post('http://10.0.2.2/SwapPH/restapi/loginMobile', formData)
+        .post('https://swapph.online/restapi/Login', formData)
         .then(response => {
           user.id = response.data.data[0].ID;
           user.barangay = response.data.data[0].Barangay;
@@ -66,18 +70,32 @@ function Login() {
           user.isDeactivated = response.data.data[0].isDeactivated;
           user.isDeactivatedById = response.data.data[0].isDeactivatedByID;
           user.isValidated = response.data.data[0].isValidated;
+          console.log('no errors');
+          setLoading(false);
         })
         .then(() => {
           navigation.navigate('HomeStack');
         })
         .catch(e => {
-          Alert.alert('An error occured!', e.response.data);
+          Alert.alert(
+            'Invalid Credentials!',
+            'Please input your correct email and password!',
+          );
+          setLoading(false);
+          console.log(e);
         });
     }
   };
 
   return (
     <KeyboardAvoidingView style={styles.container} keyboardVerticalOffset={50}>
+      <Modal transparent={true} visible={loading}>
+        <View style={styles.modalBackground}>
+          <View style={styles.activityIndicatorWrapper}>
+            <ActivityIndicator animating={loading} color="blue" />
+          </View>
+        </View>
+      </Modal>
       <View style={styles.headerContainer}>
         <Text style={styles.title}>Welcome Back</Text>
         <Text style={styles.description}>
@@ -189,6 +207,23 @@ const styles = StyleSheet.create({
   },
   registerContainer: {
     flexDirection: 'row',
+  },
+
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: '#00000040',
+  },
+  activityIndicatorWrapper: {
+    backgroundColor: '#FFFFFF',
+    height: 50,
+    width: 50,
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
 });
 

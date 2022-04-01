@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,15 @@ import {
 import {Avatar, FAB, Paragraph} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
+import {UserContext} from '../../provider/UserProvider';
 
 const Profile = () => {
+  const user = useContext(UserContext);
+
+  useEffect(() => {
+    console.log(user.profilePicture);
+  }, []);
+
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
@@ -18,7 +25,7 @@ const Profile = () => {
         <TouchableOpacity>
           <Avatar.Image
             size={100}
-            source={require('../../assets/profile_img/avatar.png')}
+            source={{uri: 'https://swapph.online/' + user.profilePicture}}
           />
           <FAB style={styles.fab} small icon="camera-outline" color="#a6a6a6" />
         </TouchableOpacity>

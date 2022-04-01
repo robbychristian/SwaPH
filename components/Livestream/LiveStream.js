@@ -10,6 +10,7 @@ const LiveStream = () => {
   const roomKey = route.params.roomKey;
   const jwtToken = route.params.jwtToken;
   const liveId = route.params.liveId;
+  const isHost = route.params.isHost;
   useEffect(() => {
     console.log(jwtToken);
     console.log(roomKey);
@@ -20,12 +21,22 @@ const LiveStream = () => {
         displayName: user.fname,
         email: user.email,
       };
-      const options = {
-        audioMuted: true,
-        audioOnly: false,
-        videoMuted: false,
-        token: jwtToken,
-      };
+      let options = {};
+      if (isHost) {
+        options = {
+          audioMuted: false,
+          audioOnly: false,
+          videoMuted: false,
+          token: jwtToken,
+        };
+      } else {
+        options = {
+          audioMuted: false,
+          audioOnly: false,
+          videoMuted: true,
+          token: jwtToken,
+        };
+      }
       const meetFeatureFlags = {
         addPeopleEnabled: true,
         calendarEnabled: true,

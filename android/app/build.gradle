@@ -134,6 +134,10 @@ def nativeArchitectures = project.getProperties().get("reactNativeDebugArchitect
 
 android {
     ndkVersion rootProject.ext.ndkVersion
+    
+    packagingOptions {
+  exclude 'META-INF/react-native-webview_release.kotlin_module'
+}
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 

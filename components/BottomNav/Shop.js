@@ -106,56 +106,6 @@ const Shop = () => {
         </View>
         {/* JUMBOTRON END */}
 
-        {/* CATEGORY START */}
-        <View style={styles.categoryContainer}>
-          <TouchableOpacity style={styles.categoryItem}>
-            <Icon
-              name="sale"
-              size={25}
-              color="#BB8370"
-              style={styles.categoryIcon}
-            />
-            <Text style={styles.categoryTitle}>Sale</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryItem}>
-            <Icon
-              name="bank"
-              size={25}
-              color="#BB8370"
-              style={styles.categoryIcon}
-            />
-            <Text style={styles.categoryTitle}>Bill</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryItem}>
-            <Icon
-              name="gamepad-variant"
-              size={25}
-              color="#BB8370"
-              style={styles.categoryIcon}
-            />
-            <Text style={styles.categoryTitle}>Game</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryItem}>
-            <Icon
-              name="gift"
-              size={25}
-              color="#BB8370"
-              style={styles.categoryIcon}
-            />
-            <Text style={styles.categoryTitle}>Gift</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryItem}>
-            <Icon
-              name="more"
-              size={25}
-              color="#BB8370"
-              style={styles.categoryIcon}
-            />
-            <Text style={styles.categoryTitle}>More</Text>
-          </TouchableOpacity>
-        </View>
-        {/* CATEGORY END */}
-
         {/* TRADE START */}
         <View style={styles.tradeContainer}>
           <View style={styles.tradeTitleContainer}>

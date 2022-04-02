@@ -230,6 +230,8 @@ const WelcomeStackScreen = () => {
 };
 
 function App() {
+  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+  LogBox.ignoreAllLogs(); //Ignore all log notifications
   return (
     <UserProvider>
       <PaperProvider>

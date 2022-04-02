@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Modal,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import {
   Title,
@@ -68,97 +69,139 @@ const Payment = () => {
           to pay for the auction you won!
         </Paragraph>
       </View>
-      {setScreenReady ? (
+      {setScreenReady == true ? (
         <View>
           {post.map((info, id) => {
             return (
-              <View style={{alignItems: 'center'}}>
-                <Modal
-                  visible={showGateway}
-                  onDismiss={() => setShowGateway(false)}
-                  onRequestClose={() => setShowGateway(false)}
-                  animationType={'fade'}
-                  transparent>
-                  <View style={styles.webViewCon}>
-                    <View style={styles.wbHead}>
-                      <TouchableOpacity
-                        style={{padding: 13}}
-                        onPress={() =>
-                          setShowGateway(false)
-                        }></TouchableOpacity>
-                      <Text
-                        style={{
-                          flex: 1,
-                          textAlign: 'center',
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          color: '#00457C',
-                        }}>
-                        PayPal GateWay
-                      </Text>
-                      <View style={{padding: 13}}>
-                        <ActivityIndicator size={24} color={'#00457C'} />
-                      </View>
-                    </View>
-                    <WebView
-                      source={{
-                        uri:
-                          'https://swapph.online/Posting/viewPost/' +
-                          info.AuctionID +
-                          '/auction',
-                      }}
-                      style={{flex: 1}}
-                    />
-                  </View>
-                </Modal>
-                <TouchableOpacity
-                  style={{
-                    flex: 0.48,
-                    alignItems: 'center',
-                    marginRight: 10,
-                    marginBottom: 10,
-                    maxWidth: '100%',
-                    width: '100%',
-                  }}
-                  onPress={() => {
-                    setShowGateway(true);
-                  }}>
-                  <Card mode="outlined" style={{width: '100%', height: 100}}>
-                    <Card.Content
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
-                      <Title
-                        style={{
-                          color: '#FD7644',
-                          textAlign: 'center',
-                          fontWeight: 'bold',
-                          fontSize: 20,
-                        }}>
-                        Auction Title:{' '}
-                        <Headline
+              <ScrollView>
+                <View style={{alignItems: 'center'}}>
+                  <Modal
+                    visible={showGateway}
+                    onDismiss={() => setShowGateway(false)}
+                    onRequestClose={() => setShowGateway(false)}
+                    animationType={'fade'}
+                    transparent>
+                    <View style={styles.webViewCon}>
+                      <View style={styles.wbHead}>
+                        <TouchableOpacity
+                          style={{padding: 13}}
+                          onPress={() =>
+                            setShowGateway(false)
+                          }></TouchableOpacity>
+                        <Text
                           style={{
-                            color: '#000',
+                            flex: 1,
                             textAlign: 'center',
                             fontSize: 16,
+                            fontWeight: 'bold',
+                            color: '#00457C',
                           }}>
-                          {info.Title}
-                        </Headline>
-                      </Title>
-                      <Paragraph
-                        style={{color: '#7a7a7a', textAlign: 'center'}}>
-                        Price: {info.HighestBid}
-                      </Paragraph>
-                    </Card.Content>
-                  </Card>
-                </TouchableOpacity>
-              </View>
+                          PayPal GateWay
+                        </Text>
+                        <View style={{padding: 13}}>
+                          <ActivityIndicator size={24} color={'#00457C'} />
+                        </View>
+                      </View>
+                      <WebView
+                        source={{
+                          uri:
+                            'https://swapph.online/Posting/viewPost/' +
+                            info.AuctionID +
+                            '/auction',
+                        }}
+                        style={{flex: 1}}
+                      />
+                    </View>
+                  </Modal>
+                  <TouchableOpacity
+                    style={{
+                      flex: 0.48,
+                      alignItems: 'center',
+                      marginRight: 10,
+                      marginBottom: 10,
+                      maxWidth: '100%',
+                      width: '100%',
+                    }}
+                    onPress={() => {
+                      setShowGateway(true);
+                    }}>
+                    <Card mode="outlined" style={{width: '100%', height: 100}}>
+                      <Card.Content
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Title
+                          style={{
+                            color: '#FD7644',
+                            textAlign: 'center',
+                            fontWeight: 'bold',
+                            fontSize: 20,
+                          }}>
+                          Auction Title:{' '}
+                          <Headline
+                            style={{
+                              color: '#000',
+                              textAlign: 'center',
+                              fontSize: 16,
+                            }}>
+                            {info.Title}
+                          </Headline>
+                        </Title>
+                        <Paragraph
+                          style={{color: '#7a7a7a', textAlign: 'center'}}>
+                          Price: {info.HighestBid}
+                        </Paragraph>
+                      </Card.Content>
+                    </Card>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
             );
           })}
         </View>
       ) : (
-        <View></View>
+        <View>
+          <View
+            style={{
+              flex: 0.48,
+              alignItems: 'center',
+              marginRight: 10,
+              marginBottom: 10,
+              maxWidth: '100%',
+              width: '100%',
+            }}>
+            <Card mode="outlined" style={{width: '100%', height: 100}}>
+              <Card.Content
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Title
+                  style={{
+                    color: '#FD7644',
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    fontSize: 20,
+                  }}>
+                  No Items to
+                  <Headline
+                    style={{
+                      color: '#000',
+                      textAlign: 'center',
+                      fontSize: 20,
+                    }}>
+                    {' '}
+                    Display
+                  </Headline>
+                </Title>
+                <Paragraph style={{color: '#7a7a7a', textAlign: 'center'}}>
+                  No biddings were made in this account yet.
+                </Paragraph>
+              </Card.Content>
+            </Card>
+          </View>
+        </View>
       )}
     </SafeAreaView>
   );

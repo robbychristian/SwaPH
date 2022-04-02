@@ -211,7 +211,7 @@ const IndividualAuction = () => {
                   style={{marginTop: 10}}
                   mode="outlined"
                   color="black"
-                  onPress={() => setVisible(false)}>
+                  onPress={() => setMessageVisible(false)}>
                   <Text style={{color: 'gray'}}>Cancel</Text>
                 </Button>
                 <Button
@@ -257,7 +257,9 @@ const IndividualAuction = () => {
                 {traderId == user.id ? (
                   <View></View>
                 ) : (
-                  <TouchableOpacity style={styles.button}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => setMessageVisible(true)}>
                     <View style={styles.buttonIn}>
                       <Text style={{color: '#FFF', fontWeight: 'bold'}}>
                         Message Trader

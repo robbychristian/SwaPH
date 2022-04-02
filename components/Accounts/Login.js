@@ -45,33 +45,43 @@ function Login() {
       axios
         .post('https://swapph.online/restapi/Login', formData)
         .then(response => {
-          user.id = response.data.data[0].ID;
-          user.barangay = response.data.data[0].Barangay;
-          user.birthday = response.data.data[0].Birthday;
-          user.city = response.data.data[0].City;
-          user.contactNumber = response.data.data[0].ContactNumber;
-          user.email = response.data.data[0].Email;
-          user.fname = response.data.data[0].Fname;
-          user.lastUpdateDate = response.data.data[0].LastUpdateDate;
-          user.lastUpdatedId = response.data.data[0].LastUpdateID;
-          user.lastUpdatedUserType = response.data.data[0].LastUpdatedUserType;
-          user.lname = response.data.data[0].Lname;
-          user.password = response.data.data[0].Password;
-          user.photoWithIdLink = response.data.data[0].PhotoWithIdLink;
-          user.profilePicture = response.data.data[0].ProfilePicture;
-          user.region = response.data.data[0].Region;
-          user.street = response.data.data[0].Street;
-          user.userType = response.data.data[0].UserType;
-          user.username = response.data.data[0].Username;
-          user.validIdLink = response.data.data[0].ValidIDLink;
-          user.validatedBy = response.data.data[0].ValidatedBy;
-          user.validatedByUserType = response.data.data[0].ValidatedByUserType;
-          user.zip = response.data.data[0].Zip;
-          user.isDeactivated = response.data.data[0].isDeactivated;
-          user.isDeactivatedById = response.data.data[0].isDeactivatedByID;
-          user.isValidated = response.data.data[0].isValidated;
-          console.log('no errors');
-          setLoading(false);
+          if (response.data.data[0].isValidated == 0) {
+            setLoading(false);
+            Alert.alert(
+              'Account not Verified!',
+              'It may take awhile to verify your account with the valid IDs that were sent. Try again later!',
+            );
+          } else {
+            user.id = response.data.data[0].ID;
+            user.barangay = response.data.data[0].Barangay;
+            user.birthday = response.data.data[0].Birthday;
+            user.city = response.data.data[0].City;
+            user.contactNumber = response.data.data[0].ContactNumber;
+            user.email = response.data.data[0].Email;
+            user.fname = response.data.data[0].Fname;
+            user.lastUpdateDate = response.data.data[0].LastUpdateDate;
+            user.lastUpdatedId = response.data.data[0].LastUpdateID;
+            user.lastUpdatedUserType =
+              response.data.data[0].LastUpdatedUserType;
+            user.lname = response.data.data[0].Lname;
+            user.password = response.data.data[0].Password;
+            user.photoWithIdLink = response.data.data[0].PhotoWithIdLink;
+            user.profilePicture = response.data.data[0].ProfilePicture;
+            user.region = response.data.data[0].Region;
+            user.street = response.data.data[0].Street;
+            user.userType = response.data.data[0].UserType;
+            user.username = response.data.data[0].Username;
+            user.validIdLink = response.data.data[0].ValidIDLink;
+            user.validatedBy = response.data.data[0].ValidatedBy;
+            user.validatedByUserType =
+              response.data.data[0].ValidatedByUserType;
+            user.zip = response.data.data[0].Zip;
+            user.isDeactivated = response.data.data[0].isDeactivated;
+            user.isDeactivatedById = response.data.data[0].isDeactivatedByID;
+            user.isValidated = response.data.data[0].isValidated;
+            console.log('no errors');
+            setLoading(false);
+          }
         })
         .then(() => {
           navigation.navigate('HomeStack');

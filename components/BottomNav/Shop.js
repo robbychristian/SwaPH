@@ -18,6 +18,7 @@ import {UserContext} from '../../provider/UserProvider';
 import axios from 'axios';
 
 const Shop = () => {
+  const user = useContext(UserContext);
   const [search, setSearch] = useState('');
   const onSearch = query => setSearch(query);
   const navigation = useNavigation();
@@ -184,6 +185,7 @@ const Shop = () => {
                     }}
                     onPress={() => {
                       navigation.navigate('IndividualTrade', {
+                        userId: user.id,
                         id: info.BarterID,
                         title: info.Title,
                         description: info.Description,

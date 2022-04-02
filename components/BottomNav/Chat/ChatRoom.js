@@ -18,13 +18,21 @@ const ChatRoom = () => {
   const navigation = useNavigation();
   const [chatRooms, setChatRooms] = useState([]);
   const [chatReady, setChatReady] = useState(false);
+  const [receiverID, setReceiverID] = useState(0);
+  const [senderID, setSenderID] = useState(0);
   useEffect(() => {
     const formData = new FormData();
+    //console.log(parseInt(user.id));
     formData.append('id', user.id);
     axios
       .post('https://swapph.online/restapi/GetAllChats', formData)
       .then(response => {
-        console.log(response.data.Data.messageList);
+        //console.log(response.data.Data.messageList.senderID);
+        //console.log(response.data.Data.messageList[0].ReceiverID);
+        if (response.data.Data.messageList[0].ReceiverID != user.id) {
+          setReceiverID(response.data.Data.messageList[0].ReceiverID);
+          setSenderID(parseInt(user.id));
+        }
         setChatRooms(response.data.Data.messageList);
       })
       .catch(e => {
@@ -33,7 +41,7 @@ const ChatRoom = () => {
   }, []);
 
   useEffect(() => {
-    console.log(chatRooms.length);
+    //console.log(chatRooms.length);
     if (chatRooms.length > 0) {
       setChatReady(true);
     } else {
@@ -68,6 +76,8 @@ const ChatRoom = () => {
                   onPress={() => {
                     navigation.navigate('Chat', {
                       chatId: info.ID,
+                      receiverID: info.ReceiverID,
+                      senderID: parseInt(user.id),
                     });
                   }}>
                   <List.Item
@@ -86,6 +96,8 @@ const ChatRoom = () => {
                   onPress={() => {
                     navigation.navigate('Chat', {
                       chatId: info.ID,
+                      receiverID: info.SenderID,
+                      senderID: parseInt(user.id),
                     });
                   }}>
                   <List.Item

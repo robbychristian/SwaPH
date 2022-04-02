@@ -37,6 +37,9 @@ const IndividualAuction = () => {
   const [traderData, setTraderData] = useState([]);
   const [slideShow, setSlideShow] = useState([]);
   const [visible, setVisible] = useState(false);
+  //FOR MESSAGING
+  const [messageVisible, setMessageVisible] = useState(false);
+  const [message, setMessage] = useState('');
   const [bid, setBid] = useState(0);
   const [newBid, setNewBid] = useState(0);
   const arr = [];
@@ -45,6 +48,7 @@ const IndividualAuction = () => {
   const title = route.params.title;
   const description = route.params.description;
   const highestBid = route.params.highestBid;
+  const traderId = route.params.traderId;
 
   const formdata = new FormData();
   formdata.append('post_id', id);
@@ -106,6 +110,32 @@ const IndividualAuction = () => {
       });
   };
 
+  //CREATING MEESAGE THROUGH PM
+  const createMessage = () => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('user_id', user.id);
+    formData.append('receiverID', traderId);
+    formData.append('message', message);
+    axios
+      .post('https://swapph.online/restapi/CreateNewMessage', formData)
+      .then(response => {
+        setLoading(false);
+        navigation.navigate('Chat', {
+          chatId: response.data,
+          receiverID: traderId,
+          senderID: parseInt(user.id),
+        });
+      })
+      .catch(e => {
+        Alert.alert(
+          'Error!',
+          'There was an error sending your message. Make sure you have internet connection!',
+        );
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     fetchData();
   }, [newBid]);
@@ -123,6 +153,8 @@ const IndividualAuction = () => {
             </View>
           </View>
         </Modal>
+
+        {/* FOR BIDDING */}
         <Modal transparent={true} visible={visible}>
           <View style={styles.modalBackground}>
             <View style={styles.formWrapper}>
@@ -158,6 +190,41 @@ const IndividualAuction = () => {
             </View>
           </View>
         </Modal>
+        {/* FOR MESSAGING */}
+        <Modal transparent={true} visible={messageVisible}>
+          <View style={styles.modalBackground}>
+            <View style={styles.formWrapper}>
+              <Title>Type your message</Title>
+              <TextInput
+                activeOutlineColor="#808080"
+                style={styles.input}
+                mode="outlined"
+                onChangeText={setMessage}
+              />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                }}>
+                <Button
+                  style={{marginTop: 10}}
+                  mode="outlined"
+                  color="black"
+                  onPress={() => setVisible(false)}>
+                  <Text style={{color: 'gray'}}>Cancel</Text>
+                </Button>
+                <Button
+                  style={{marginTop: 10, backgroundColor: '#4B3299'}}
+                  mode="contained"
+                  color="blue"
+                  onPress={() => createMessage()}>
+                  <Text style={{color: '#FFF'}}>Submit</Text>
+                </Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
         <Slideshow dataSource={slideShow} height={300} />
         {traderData.map((info, id) => {
           return (
@@ -187,24 +254,32 @@ const IndividualAuction = () => {
                     Current Highest Bid: {info.HighestBid + '\n'}
                   </Paragraph>
                 </View>
-                <TouchableOpacity style={styles.button}>
-                  <View style={styles.buttonIn}>
-                    <Text style={{color: '#FFF', fontWeight: 'bold'}}>
-                      Message Trader
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                {traderId == user.id ? (
+                  <View></View>
+                ) : (
+                  <TouchableOpacity style={styles.button}>
+                    <View style={styles.buttonIn}>
+                      <Text style={{color: '#FFF', fontWeight: 'bold'}}>
+                        Message Trader
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
               </Surface>
             </View>
           );
         })}
       </ScrollView>
-      <FAB
-        style={styles.fab}
-        icon="cash-marker"
-        color="#FFF"
-        onPress={() => setVisible(true)}
-      />
+      {traderId == user.id ? (
+        <View></View>
+      ) : (
+        <FAB
+          style={styles.fab}
+          icon="cash-marker"
+          color="#FFF"
+          onPress={() => setVisible(true)}
+        />
+      )}
     </SafeAreaView>
   );
 };

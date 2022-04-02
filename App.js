@@ -47,6 +47,10 @@ import MyAccount from './components/BottomNav/Profile/MyAccount';
 import Report from './components/BottomNav/Profile/Report';
 import ChatRoom from './components/BottomNav/Chat/ChatRoom';
 import Chat from './components/BottomNav/Chat/Chat';
+import CustomerService from './components/BottomNav/Profile/CustomerService';
+import Payment from './components/BottomNav/Profile/Payment';
+
+import {LogBox} from 'react-native';
 
 const WelcomeScreen = () => {
   return <Welcome />;
@@ -116,6 +120,14 @@ const ReportScreen = () => {
   return <Report />;
 };
 
+const CustomerServiceScreen = () => {
+  return <CustomerService />;
+};
+
+const PaymentScreen = () => {
+  return <Payment />;
+};
+
 //TRADE STACK
 const IndividualTradeScreen = () => {
   return <IndividualTrade />;
@@ -152,6 +164,11 @@ const LoginStackScreen = () => {
       <LoginStack.Screen name="HomeStack" component={Home} options />
       <LoginStack.Screen name="MyAccount" component={MyAccountScreen} />
       <LoginStack.Screen name="Report" component={ReportScreen} />
+      <LoginStack.Screen
+        name="CustomerService"
+        component={CustomerServiceScreen}
+      />
+      <LoginStack.Screen name="Payment" component={PaymentScreen} />
       <LoginStack.Screen name="LiveStream" component={LiveStreamScreen} />
       <LoginStack.Screen name="LiveStreamRoom" component={LiveStreamRoom} />
       <LoginStack.Screen
@@ -175,6 +192,8 @@ const LoginStackScreen = () => {
 };
 
 const RegisterStackScreen = () => {
+  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+  LogBox.ignoreAllLogs(); //Ignore all log notifications
   return (
     <RegisterStack.Navigator screenOptions={{headerShown: false}}>
       <RegisterStack.Screen name="FirstRegister" component={RegisterScreen} />

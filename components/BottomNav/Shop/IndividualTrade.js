@@ -10,6 +10,7 @@ import {
   Image,
   TouchableOpacity,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import {
   Paragraph,
@@ -22,10 +23,11 @@ import {
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {UserContext} from '../../../provider/UserProvider';
 import axios from 'axios';
-import {Card} from 'react-native-paper';
+import {Card, TextInput, Button} from 'react-native-paper';
 import Slideshow from 'react-native-image-slider-show';
 
 const IndividualTrade = () => {
+  const user = useContext(UserContext);
   const navigation = useNavigation();
   const route = useRoute();
   const [loading, setLoading] = useState(false);
@@ -37,6 +39,11 @@ const IndividualTrade = () => {
   const [postData, setPostData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [mounted, isMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [message, setMessage] = useState('');
+
+  //CHECK IF POST IS FROM AUTH
+  const userId = route.params.userId;
 
   //ALL PASSED DATA
   const id = route.params.id;
@@ -112,6 +119,31 @@ const IndividualTrade = () => {
     fetchData();
   };
 
+  const createMessage = () => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('user_id', user.id);
+    formData.append('receiverID', traderId);
+    formData.append('message', message);
+    axios
+      .post('https://swapph.online/restapi/CreateNewMessage', formData)
+      .then(response => {
+        setLoading(false);
+        navigation.navigate('Chat', {
+          chatId: response.data,
+          receiverID: traderId,
+          senderID: parseInt(user.id),
+        });
+      })
+      .catch(e => {
+        Alert.alert(
+          'Error!',
+          'There was an error sending your message. Make sure you have internet connection!',
+        );
+        setLoading(false);
+      });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -123,6 +155,41 @@ const IndividualTrade = () => {
           <View style={styles.modalBackground}>
             <View style={styles.activityIndicatorWrapper}>
               <ActivityIndicator animating={loading} color="blue" />
+            </View>
+          </View>
+        </Modal>
+
+        <Modal transparent={true} visible={visible}>
+          <View style={styles.modalBackground}>
+            <View style={styles.formWrapper}>
+              <Title>Type your message</Title>
+              <TextInput
+                activeOutlineColor="#808080"
+                style={styles.input}
+                mode="outlined"
+                onChangeText={setMessage}
+              />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                }}>
+                <Button
+                  style={{marginTop: 10}}
+                  mode="outlined"
+                  color="black"
+                  onPress={() => setVisible(false)}>
+                  <Text style={{color: 'gray'}}>Cancel</Text>
+                </Button>
+                <Button
+                  style={{marginTop: 10, backgroundColor: '#4B3299'}}
+                  mode="contained"
+                  color="blue"
+                  onPress={() => createMessage()}>
+                  <Text style={{color: '#FFF'}}>Submit</Text>
+                </Button>
+              </View>
             </View>
           </View>
         </Modal>
@@ -161,13 +228,19 @@ const IndividualTrade = () => {
                     Item Details: {info.ItemDetails + '\n'}
                   </Paragraph>
                 </View>
-                <View style={styles.button}>
-                  <TouchableOpacity style={styles.buttonIn}>
-                    <Text style={{color: '#FFF', fontWeight: 'bold'}}>
-                      Message Trader
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                {userId == info.TraderID ? (
+                  <View></View>
+                ) : (
+                  <View style={styles.button}>
+                    <TouchableOpacity
+                      style={styles.buttonIn}
+                      onPress={() => setVisible(true)}>
+                      <Text style={{color: '#FFF', fontWeight: 'bold'}}>
+                        Message Trader
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </Surface>
             </View>
           );
@@ -262,6 +335,22 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around',
+  },
+  formWrapper: {
+    backgroundColor: '#FFFFFF',
+    width: '75%',
+    height: 200,
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingVertical: 20,
+  },
+  input: {
+    color: '#fff',
+    width: '80%',
+    backgroundColor: '#FFF',
+    height: 50,
   },
 
   button: {

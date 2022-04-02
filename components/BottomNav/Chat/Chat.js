@@ -10,12 +10,12 @@ const Chat = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const chatId = route.params.chatId;
+  const receiverID = route.params.receiverID;
+  const senderID = route.params.senderID;
   const user = useContext(UserContext);
   const [allChat, setAllChat] = useState([]);
   const [chatReady, setChatReady] = useState(false);
   const [message, setMessage] = useState('');
-  const [receiverId, setReceiverId] = useState(0);
-  const [senderId, setSenderId] = useState(0);
   const scrollRef = useRef();
   const chatRef = useRef();
   const inputRef = useRef();
@@ -42,13 +42,15 @@ const Chat = () => {
   useEffect(() => {
     if (allChat.length > 0) {
       setChatReady(true);
-      allChat.map((info, id) => {
-        if (info.SenderID != user.id) {
-          setReceiverId(info.SenderID);
-        } else {
-          setSenderId(info.SenderID);
-        }
-      });
+      // allChat.map((info, id) => {
+      //   if (info.SenderID != user.id) {
+      //     //console.log(info.SenderID);
+      //     setReceiverId(info.SenderID);
+      //   } else {
+      //     //console.log(info.SenderID);
+      //     setSenderId(user.id);
+      //   }
+      // });
     } else {
       setChatReady(false);
     }
@@ -61,8 +63,8 @@ const Chat = () => {
     //console.log(message);
     const formData = new FormData();
     formData.append('chatID', chatId);
-    formData.append('senderID', parseInt(senderId));
-    formData.append('receiverID', parseInt(receiverId));
+    formData.append('senderID', senderID);
+    formData.append('receiverID', receiverID);
     formData.append('message', message);
     axios
       .post('https://swapph.online/restapi/SendMessage', formData)

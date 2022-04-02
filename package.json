@@ -10,6 +10,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@emailjs/browser": "^3.5.0",
+    "@paypal/paypal-js": "^5.0.3",
     "@react-native-community/datetimepicker": "^6.0.1",
     "@react-native-picker/picker": "^2.4.0",
     "@react-navigation/bottom-tabs": "^6.2.0",
@@ -29,7 +31,8 @@
     "react-native-screens": "^3.13.1",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-textinput-effects": "^0.6.2",
-    "react-native-vector-icons": "^9.1.0"
+    "react-native-vector-icons": "^9.1.0",
+    "react-native-webview": "^11.18.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

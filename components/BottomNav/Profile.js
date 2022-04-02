@@ -68,7 +68,9 @@ const Profile = () => {
             color="#EB805F"
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionContainer}>
+        <TouchableOpacity
+          style={styles.optionContainer}
+          onPress={() => navigation.navigate('CustomerService')}>
           <Icon name="phone" size={30} color="#EB805F" style={{flex: 0.2}} />
           <Paragraph style={{flex: 0.7, color: '#FD7644'}}>
             Contact Customer Service
@@ -83,7 +85,9 @@ const Profile = () => {
             color="#EB805F"
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionContainer}>
+        <TouchableOpacity
+          style={styles.optionContainer}
+          onPress={() => navigation.push('Payment')}>
           <Icon
             name="cash-multiple"
             size={30}

@@ -16,6 +16,9 @@ import {
   Paragraph,
   TextInput,
   Subheading,
+  Checkbox,
+  Headline,
+  Caption,
 } from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {Picker} from '@react-native-picker/picker';
@@ -28,6 +31,8 @@ const CreateTrade = () => {
   const navigation = useNavigation();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [viewTerms, setViewTerms] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
   const pickerRef = useRef();
 
   // FORM FIELDS
@@ -77,6 +82,53 @@ const CreateTrade = () => {
     });
   };
 
+  const continueSubmit = () => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('itemname', objectName);
+    formData.append('itemcategory', category);
+    formData.append('itemdetails', objectDescription);
+    formData.append('userID', user.id);
+    axios
+      .post('https://swapph.online/restapi/PostBarter', formData)
+      .then(response => {
+        const imageForm = new FormData();
+        let image = {
+          uri: itemUri,
+          type: 'multipart/form-data',
+          name: itemName,
+        };
+        imageForm.append('image', image);
+        imageForm.append('supporting_id', response.data.PostID);
+        imageForm.append('support_type', 'barter');
+        axios
+          .post('https://swapph.online/restapi/AddSupportingImage', imageForm)
+          .then(response => {
+            console.log(response.data);
+            setLoading(false);
+            navigation.navigate('HomeStack');
+          })
+          .catch(e => {
+            console.log(e.response);
+            Alert.alert(
+              'Upload Error!',
+              'There was an error in uploading your file!',
+            );
+            setLoading(false);
+          });
+      })
+      .catch(e => {
+        console.log(e.response);
+        Alert.alert(
+          'Error!',
+          'An unexpected error happened! Please make sure you have internet connection.',
+        );
+        setLoading(false);
+      });
+  };
+
   const submit = () => {
     if (
       title == '' ||
@@ -88,50 +140,7 @@ const CreateTrade = () => {
     ) {
       Alert.alert('Input Error!', 'Please fill in the fields that are empty.');
     } else {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('description', description);
-      formData.append('itemname', objectName);
-      formData.append('itemcategory', category);
-      formData.append('itemdetails', objectDescription);
-      formData.append('userID', user.id);
-      axios
-        .post('https://swapph.online/restapi/PostBarter', formData)
-        .then(response => {
-          const imageForm = new FormData();
-          let image = {
-            uri: itemUri,
-            type: 'multipart/form-data',
-            name: itemName,
-          };
-          imageForm.append('image', image);
-          imageForm.append('supporting_id', response.data.PostID);
-          imageForm.append('support_type', 'barter');
-          axios
-            .post('https://swapph.online/restapi/AddSupportingImage', imageForm)
-            .then(response => {
-              console.log(response.data);
-              setLoading(false);
-              navigation.navigate('HomeStack');
-            })
-            .catch(e => {
-              console.log(e.response);
-              Alert.alert(
-                'Upload Error!',
-                'There was an error in uploading your file!',
-              );
-              setLoading(false);
-            });
-        })
-        .catch(e => {
-          console.log(e.response);
-          Alert.alert(
-            'Error!',
-            'An unexpected error happened! Please make sure you have internet connection.',
-          );
-          setLoading(false);
-        });
+      setViewTerms(true);
     }
   };
 
@@ -154,6 +163,85 @@ const CreateTrade = () => {
           </View>
         </View>
       </Modal>
+      {/* TERMS AND CONDITION START */}
+      <Modal transparent={true} visible={viewTerms}>
+        <View style={styles.modalBackground}>
+          <View style={styles.formWrapper}>
+            <View
+              style={{
+                width: '100%',
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
+              }}>
+              <Button
+                icon="close"
+                labelStyle={{
+                  fontSize: 15,
+                  height: 1,
+                  fontWeight: 'bold',
+                  marginRight: -10,
+                }}
+                color="#000"
+                mode="text"
+                onPress={() => setViewTerms(false)}
+              />
+            </View>
+            <Title style={{textAlign: 'center', marginTop: -10}}>
+              Terms and Conditions
+            </Title>
+            <View style={styles.termsContainer}>
+              <Subheading style={{fontWeight: 'bold'}}>
+                POLICIES IN TRADE:
+              </Subheading>
+              <Caption>
+                Poisons, explosive precursors, ozone-depleting chemicals, and
+                radioactive materials, as well as objects containing or emitting
+                such substances, are usually banned on SwaPH. SwaPH will not be
+                held liable for any agreement reached between the parties
+                engaged in the transaction. It is the traders' duty to inspect
+                the item during the exchange since SwaPH is not liable for the
+                quality of the products or services provided by any of the
+                parties. In order to complete a transaction, traders must have a
+                valid account. Barter Systems reserves the right to suspend a
+                Trader's account and/or terminate this agreement if one or more
+                of the following conditions exists: Trader has committed fraud
+                against either other clients or Barter Systems. Trader is not
+                abiding by the terms of his/her contract with Barter Systems.
+                Trader has acted in an unprofessional manner when dealing with
+                Barter Systems staff or when trading with other Barter Systems
+                clients.
+              </Caption>
+              <View style={styles.checkboxField}>
+                <Checkbox
+                  status={agreeTerms ? 'checked' : 'unchecked'}
+                  onPress={() => {
+                    setAgreeTerms(!agreeTerms);
+                  }}
+                />
+                <Subheading style={{fontSize: 13, fontWeight: 'bold'}}>
+                  I agree with the terms and conditions
+                </Subheading>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'flex-end',
+              }}>
+              <Button
+                style={{marginTop: 10}}
+                mode="contained"
+                color="blue"
+                disabled={!agreeTerms}
+                onPress={() => continueSubmit()}>
+                <Text style={{color: '#FFF'}}>Submit</Text>
+              </Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      {/* TERMS AND CONDITION END */}
       <View style={{width: '10%'}}>
         <Button
           icon="arrow-left"
@@ -362,6 +450,25 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around',
+  },
+  formWrapper: {
+    backgroundColor: '#FFFFFF',
+    width: '75%',
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingVertical: 20,
+  },
+  termsContainer: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingLeft: 15,
+  },
+  checkboxField: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

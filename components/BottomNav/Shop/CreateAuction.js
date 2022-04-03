@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, useRef} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -16,12 +16,16 @@ import {
   Paragraph,
   TextInput,
   Subheading,
+  Checkbox,
+  Caption,
+  Headline,
 } from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {UserContext} from '../../../provider/UserProvider';
+import {Picker} from '@react-native-picker/picker';
 import axios from 'axios';
 
 const CreateAuction = () => {
@@ -29,6 +33,11 @@ const CreateAuction = () => {
   const user = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const pickerRef = useRef();
+
+  //TERMS MODAL
+  const [viewTerms, setViewTerms] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
 
   // TEXTS
   const [title, setTitle] = useState('');
@@ -68,6 +77,13 @@ const CreateAuction = () => {
   const confirmEndDate = date => {
     setEndDate(moment(date).format('YYYY-MM-DD'));
     hideEndPicker();
+  };
+
+  const open = () => {
+    pickerRef.current.focus();
+  };
+  const close = () => {
+    pickerRef.current.blur();
   };
 
   //PERMISSION REQUEST / IMAGE PICKER
@@ -114,6 +130,64 @@ const CreateAuction = () => {
     });
   };
 
+  const continueSubmit = () => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('userID', user.id);
+    formData.append('startBid', startBid);
+    formData.append('endDate', endDate);
+    formData.append('itemname', objectName);
+    formData.append('itemcategory', category);
+    formData.append('itemdetails', objectDesc);
+
+    axios({
+      url: 'https://swapph.online/restapi/PostAuction',
+      method: 'POST',
+      data: formData,
+    })
+      .then(response => {
+        console.log(response.data.PostID);
+        const imageForm = new FormData();
+        let image = {
+          uri: itemUri,
+          type: 'multipart/form-data',
+          name: itemName,
+        };
+        imageForm.append('image', image);
+        imageForm.append('supporting_id', response.data.PostID);
+        imageForm.append('support_type', 'auction');
+        axios
+          .post('https://swapph.online/restapi/AddSupportingImage', imageForm)
+          .then(response => {
+            console.log(response.data);
+            setLoading(false);
+            Alert.alert(
+              'Success!',
+              'Your auction has now been added to the listings.',
+            );
+            navigation.navigate('HomeStack');
+          })
+          .catch(e => {
+            console.log(e.response);
+            setLoading(false);
+            Alert.alert(
+              'Upload Error!',
+              'There was an error in uploading your file!',
+            );
+          });
+      })
+      .catch(e => {
+        console.log(e.response);
+        setLoading(false);
+        Alert.alert(
+          'Error!',
+          'An unexpected error happened! Please make sure you have internet connection.',
+        );
+      });
+  };
+
   // SUBMIT ACTION
   const submit = () => {
     if (
@@ -127,72 +201,16 @@ const CreateAuction = () => {
       itemUri == ''
     ) {
       Alert.alert('Input Error!', 'Please fill in the fields that are empty.');
+    } else if (
+      moment().isAfter(moment(endDate)) ||
+      moment().isSame(moment(endDate))
+    ) {
+      Alert.alert(
+        'Date error!',
+        'Please input a date after ' + moment().format('LL') + '!',
+      );
     } else {
-      setLoading(true);
-      const formData = new FormData();
-      // let image = {
-      //   uri: itemUri,
-      //   type: 'multipart/form-data',
-      //   name: itemName,
-      // };
-      // formData.append('itemimage', image);
-      formData.append('title', title);
-      formData.append('description', description);
-      formData.append('userID', user.id);
-      formData.append('startBid', startBid);
-      formData.append('endDate', endDate);
-      formData.append('itemname', objectName);
-      formData.append('itemcategory', category);
-      formData.append('itemdetails', objectDesc);
-
-      axios({
-        url: 'https://swapph.online/restapi/PostAuction',
-        method: 'POST',
-        data: formData,
-        // headers: {
-        //   Accept: 'multipart/form-data',
-        //   'Content-Type': 'multipart/form-data',
-        // },
-      })
-        .then(response => {
-          console.log(response.data.PostID);
-          const imageForm = new FormData();
-          let image = {
-            uri: itemUri,
-            type: 'multipart/form-data',
-            name: itemName,
-          };
-          imageForm.append('image', image);
-          imageForm.append('supporting_id', response.data.PostID);
-          imageForm.append('support_type', 'auction');
-          axios
-            .post('https://swapph.online/restapi/AddSupportingImage', imageForm)
-            .then(response => {
-              console.log(response.data);
-              setLoading(false);
-              Alert.alert(
-                'Success!',
-                'Your auction has now been added to the listings.',
-              );
-              navigation.navigate('HomeStack');
-            })
-            .catch(e => {
-              console.log(e.response);
-              setLoading(false);
-              Alert.alert(
-                'Upload Error!',
-                'There was an error in uploading your file!',
-              );
-            });
-        })
-        .catch(e => {
-          console.log(e.response);
-          setLoading(false);
-          Alert.alert(
-            'Error!',
-            'An unexpected error happened! Please make sure you have internet connection.',
-          );
-        });
+      setViewTerms(true);
     }
   };
 
@@ -216,6 +234,71 @@ const CreateAuction = () => {
           </View>
         </View>
       </Modal>
+      {/* TERMS AND CONDITION START */}
+      <Modal transparent={true} visible={viewTerms}>
+        <View style={styles.modalBackground}>
+          <View style={styles.termsWrapper}>
+            <View
+              style={{
+                width: '100%',
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
+              }}>
+              <Button
+                icon="close"
+                labelStyle={{
+                  fontSize: 15,
+                  height: 1,
+                  fontWeight: 'bold',
+                  marginRight: -10,
+                }}
+                color="#000"
+                mode="text"
+                onPress={() => setViewTerms(false)}
+              />
+            </View>
+            <Title style={{textAlign: 'center', marginTop: -10}}>
+              Terms and Conditions
+            </Title>
+            <View style={styles.termsContainer}>
+              <Caption>
+                Auctioneers are obliged to pay in advance when making a bid. If
+                they are unsuccessful in their bid, they will get their money
+                back. After the auction, the item must be awarded/shipped within
+                three business days. If the item is not delivered within three
+                days, the purchase is terminated, and the trader is refunded.
+              </Caption>
+              <View style={styles.checkboxField}>
+                <Checkbox
+                  status={agreeTerms ? 'checked' : 'unchecked'}
+                  onPress={() => {
+                    setAgreeTerms(!agreeTerms);
+                  }}
+                />
+                <Subheading style={{fontSize: 13, fontWeight: 'bold'}}>
+                  I agree with the terms and conditions
+                </Subheading>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'flex-end',
+              }}>
+              <Button
+                style={{marginTop: 10}}
+                mode="contained"
+                color="blue"
+                disabled={!agreeTerms}
+                onPress={() => continueSubmit()}>
+                <Text style={{color: '#FFF'}}>Submit</Text>
+              </Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      {/* TERMS AND CONDITION END */}
       <View style={{width: '10%'}}>
         <Button
           icon="arrow-left"
@@ -473,6 +556,26 @@ const styles = StyleSheet.create({
     color: '#fff',
     width: '100%',
     backgroundColor: '#fff',
+  },
+
+  termsWrapper: {
+    backgroundColor: '#FFFFFF',
+    width: '75%',
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingVertical: 20,
+  },
+  termsContainer: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingLeft: 15,
+  },
+  checkboxField: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

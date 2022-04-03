@@ -55,6 +55,11 @@ const Register2 = () => {
         'Error Contact Number!',
         'Contact Number should at least be 11 numbers only.',
       );
+    } else if (moment().diff(moment(birthday), 'days') < 6574) {
+      Alert.alert(
+        'Invalid Age!',
+        'You need to be 18+ in order to proceed to registration.',
+      );
     } else {
       register.fname = fname;
       register.lname = lname;

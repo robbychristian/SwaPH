@@ -28,9 +28,9 @@ const Register3 = () => {
 
   const pickerVisibility = useState(false);
   //setting calendar modal
-  const pickerRef = useRef();
   const register = useContext(RegisterContext);
   const navigation = useNavigation();
+  const pickerRef = useRef();
   const open = () => {
     pickerRef.current.focus();
   };
@@ -39,12 +39,10 @@ const Register3 = () => {
   };
 
   useEffect(() => {
-    axios
-      .get('http://10.0.2.2/SwapPH/restapi/getAllRegions/')
-      .then(response => {
-        setAvailableRegions(response.data.Data);
-        console.log(response.data.Data);
-      });
+    axios.get('https://swapph.online/restapi/GetAllRegions').then(response => {
+      setAvailableRegions(response.data.Data);
+      console.log(response.data.Data);
+    });
   }, []);
 
   const submit = () => {

@@ -1,4 +1,4 @@
-import React, {useEffect, useContext, useState} from 'react';
+import React, {useEffect, useContext, useState, useRef} from 'react';
 import {
   SafeAreaView,
   View,
@@ -18,13 +18,13 @@ import {
   Headline,
   Subheading,
   Surface,
-  Divider,
 } from 'react-native-paper';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {UserContext} from '../../../provider/UserProvider';
 import axios from 'axios';
 import {Card, TextInput, Button} from 'react-native-paper';
 import Slideshow from 'react-native-image-slider-show';
+import {Picker} from '@react-native-picker/picker';
 
 const IndividualTrade = () => {
   const user = useContext(UserContext);
@@ -41,6 +41,18 @@ const IndividualTrade = () => {
   const [mounted, isMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');
+
+  //CLOSING POST
+  const [showClose, setShowClose] = useState(false);
+  const [reason, setReason] = useState(0);
+  const [commentClose, setCommentClose] = useState('');
+  const pickerRef = useRef();
+  const open = () => {
+    pickerRef.current.focus();
+  };
+  const close = () => {
+    pickerRef.current.blur();
+  };
 
   //CHECK IF POST IS FROM AUTH
   const userId = route.params.userId;
@@ -112,11 +124,32 @@ const IndividualTrade = () => {
   useEffect(() => {
     fetchData();
     onRefresh();
+    console.log(isClosed);
   }, []);
 
   const onRefresh = () => {
     setSlideShow(arr);
     fetchData();
+  };
+
+  const closePost = () => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('postID', id);
+    formData.append('closereasosn', reason);
+    formData.append('comment', commentClose);
+    formData.append('user_id', user.id);
+    axios
+      .post('https://swapph.online/restapi/ClosePost', formData)
+      .then(response => {
+        console.log(response.data);
+        Alert.alert('Post has now been closed!');
+        setLoading(false);
+      })
+      .catch(e => {
+        Alert.alert('Error!', 'There was an error closing this post.');
+        setLoading(false);
+      });
   };
 
   const createMessage = () => {
@@ -158,6 +191,81 @@ const IndividualTrade = () => {
             </View>
           </View>
         </Modal>
+
+        {/* CLOSE POST START */}
+        <Modal transparent={true} visible={showClose}>
+          <View style={styles.modalBackground}>
+            <View style={styles.formWrapper}>
+              <View
+                style={{
+                  width: '100%',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end',
+                }}>
+                <Button
+                  icon="close"
+                  labelStyle={{
+                    fontSize: 15,
+                    height: 1,
+                    fontWeight: 'bold',
+                    marginRight: -10,
+                  }}
+                  color="#000"
+                  mode="text"
+                  onPress={() => setShowClose(false)}
+                />
+              </View>
+              <Title style={{textAlign: 'center', marginTop: -10}}>
+                Close Post
+              </Title>
+              <View style={styles.termsContainer}>
+                <TouchableOpacity
+                  style={styles.regionContainer}
+                  onPress={() => {
+                    open();
+                  }}>
+                  <TextInput
+                    mode="outlined"
+                    label="Region"
+                    style={styles.input}
+                    selectionColor="black"
+                    value={reason.toString()}
+                    outlineColor="#808080"
+                    activeOutlineColor="#808080"
+                    editable={false}
+                    onChangeText={setReason}
+                  />
+                </TouchableOpacity>
+                <TextInput
+                  mode="outlined"
+                  style={{
+                    color: '#fff',
+                    width: '80%',
+                    backgroundColor: '#FFF',
+                    height: 50,
+                    alignSelf: 'center',
+                  }}
+                  onChangeText={setCommentClose}
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                }}>
+                <Button
+                  style={{marginTop: 10}}
+                  mode="contained"
+                  color="blue"
+                  onPress={() => closePost()}>
+                  <Text style={{color: '#FFF'}}>Submit</Text>
+                </Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        {/* CLOSE POST END */}
 
         <Modal transparent={true} visible={visible}>
           <View style={styles.modalBackground}>
@@ -229,7 +337,15 @@ const IndividualTrade = () => {
                   </Paragraph>
                 </View>
                 {userId == info.TraderID ? (
-                  <View></View>
+                  <View style={styles.button}>
+                    <TouchableOpacity
+                      style={styles.buttonIn}
+                      onPress={() => setShowClose(true)}>
+                      <Text style={{color: '#FFF', fontWeight: 'bold'}}>
+                        Close Post
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 ) : (
                   <View style={styles.button}>
                     <TouchableOpacity
@@ -287,6 +403,15 @@ const IndividualTrade = () => {
           </View>
         )}
       </ScrollView>
+      <Picker
+        ref={pickerRef}
+        style={{opacity: 0, height: 0}}
+        mode="dialog"
+        selectedValue={reason}
+        onValueChange={(itemValue, itemIndex) => setReason(1)}>
+        <Picker.Item label="Item sold" value={1} />
+        <Picker.Item label="Other reasons" value={1} />
+      </Picker>
     </SafeAreaView>
   );
 };
@@ -378,6 +503,33 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
     elevation: 12,
+  },
+  regionContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: '#fff',
+    width: '100%',
+    backgroundColor: '#fff',
+  },
+  formWrapper: {
+    backgroundColor: '#FFFFFF',
+    width: '75%',
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingVertical: 20,
+  },
+  termsContainer: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: '100%',
+    paddingLeft: 15,
+  },
+  checkboxField: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

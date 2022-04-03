@@ -19,6 +19,7 @@ import {
   FAB,
   TextInput,
   Button,
+  Snackbar,
 } from 'react-native-paper';
 import {UserContext} from '../../../provider/UserProvider';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -43,6 +44,11 @@ const IndividualAuction = () => {
   const [bid, setBid] = useState(0);
   const [newBid, setNewBid] = useState(0);
   const arr = [];
+
+  //FOR COMMENT
+  const [showComment, setShowComment] = useState(false);
+  const [addComment, setAddComment] = useState('');
+  const [snackBarVisible, setSnackBarVisible] = useState(false);
 
   const id = route.params.id;
   const title = route.params.title;
@@ -86,6 +92,22 @@ const IndividualAuction = () => {
   const onRefresh = () => {
     setSlideShow(arr);
     fetchData();
+  };
+  const submitComment = () => {
+    const formData = new FormData();
+    formData.append('user_id', user.id);
+    formData.append('postID', id);
+    formData.append('comment', addComment);
+    formData.append('posttype', 'barter');
+    axios
+      .post('https://swapph.online/restapi/AddComment', formData)
+      .then(response => {
+        console.log(response.data);
+        setSnackBarVisible(true);
+      })
+      .catch(e => {
+        console.log(e.response);
+      });
   };
 
   const fetchData = () => {
@@ -190,6 +212,63 @@ const IndividualAuction = () => {
             </View>
           </View>
         </Modal>
+        {/* COMMENT ON POST START */}
+        <Modal transparent={true} visible={showComment}>
+          <View style={styles.modalBackground}>
+            <View style={styles.formWrapper}>
+              <View
+                style={{
+                  width: '100%',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end',
+                }}>
+                <Button
+                  icon="close"
+                  labelStyle={{
+                    fontSize: 15,
+                    height: 1,
+                    fontWeight: 'bold',
+                    marginRight: -10,
+                  }}
+                  color="#000"
+                  mode="text"
+                  onPress={() => setShowComment(false)}
+                />
+              </View>
+              <Title style={{textAlign: 'center', marginTop: -10}}>
+                Comment on Post
+              </Title>
+              <View style={styles.termsContainer}>
+                <TextInput
+                  mode="outlined"
+                  style={{
+                    color: '#fff',
+                    width: '80%',
+                    backgroundColor: '#FFF',
+                    height: 50,
+                    alignSelf: 'center',
+                  }}
+                  onChangeText={setAddComment}
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                }}>
+                <Button
+                  style={{marginTop: 10}}
+                  mode="contained"
+                  color="blue"
+                  onPress={() => submitComment()}>
+                  <Text style={{color: '#FFF'}}>Submit</Text>
+                </Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        {/* COMMENT ON POST END */}
         {/* FOR MESSAGING */}
         <Modal transparent={true} visible={messageVisible}>
           <View style={styles.modalBackground}>
@@ -282,6 +361,12 @@ const IndividualAuction = () => {
           onPress={() => setVisible(true)}
         />
       )}
+      <Snackbar
+        visible={snackBarVisible}
+        duration={3000}
+        onDismiss={() => setSnackBarVisible(false)}>
+        Comment added!
+      </Snackbar>
     </SafeAreaView>
   );
 };

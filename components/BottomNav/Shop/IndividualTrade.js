@@ -18,11 +18,14 @@ import {
   Headline,
   Subheading,
   Surface,
+  FAB,
+  TextInput,
+  Button,
+  Snackbar,
 } from 'react-native-paper';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {UserContext} from '../../../provider/UserProvider';
 import axios from 'axios';
-import {Card, TextInput, Button} from 'react-native-paper';
 import Slideshow from 'react-native-image-slider-show';
 import {Picker} from '@react-native-picker/picker';
 
@@ -41,6 +44,11 @@ const IndividualTrade = () => {
   const [mounted, isMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');
+
+  //COMMENTING ON POST
+  const [showComment, setShowComment] = useState(false);
+  const [addComment, setAddComment] = useState('');
+  const [snackBarVisible, setSnackBarVisible] = useState(false);
 
   //CLOSING POST
   const [showClose, setShowClose] = useState(false);
@@ -81,26 +89,6 @@ const IndividualTrade = () => {
     setSlideShow(arr);
   };
 
-  // const fetchData = () => {
-  //   setLoading(true);
-  //   console.log('first run');
-  //   axios
-  //     .post('https://swapph.online/restapi/GetPost', formData)
-  //     .then(response => {
-  //       //console.log(response.data.Data.imageData);
-  //       setImageData(response.data.Data.imageData);
-  //       setTraderData(response.data.Data.traderData);
-  //       setPostData(response.data.Data.postData);
-  //       extractImage(imageData);
-  //     })
-  //     .then(response => {
-  //       setLoading(false);
-  //     })
-  //     .catch(e => {
-  //       console.log(e.response);
-  //       setLoading(false);
-  //     });
-  // };
   const fetchData = () => {
     setLoading(true);
     axios
@@ -130,6 +118,23 @@ const IndividualTrade = () => {
   const onRefresh = () => {
     setSlideShow(arr);
     fetchData();
+  };
+
+  const submitComment = () => {
+    const formData = new FormData();
+    formData.append('user_id', user.id);
+    formData.append('postID', id);
+    formData.append('comment', addComment);
+    formData.append('posttype', 'barter');
+    axios
+      .post('https://swapph.online/restapi/AddComment', formData)
+      .then(response => {
+        console.log(response.data);
+        setSnackBarVisible(true);
+      })
+      .catch(e => {
+        console.log(e.response);
+      });
   };
 
   const closePost = () => {
@@ -266,6 +271,63 @@ const IndividualTrade = () => {
           </View>
         </Modal>
         {/* CLOSE POST END */}
+        {/* COMMENT ON POST START */}
+        <Modal transparent={true} visible={showComment}>
+          <View style={styles.modalBackground}>
+            <View style={styles.formWrapper}>
+              <View
+                style={{
+                  width: '100%',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end',
+                }}>
+                <Button
+                  icon="close"
+                  labelStyle={{
+                    fontSize: 15,
+                    height: 1,
+                    fontWeight: 'bold',
+                    marginRight: -10,
+                  }}
+                  color="#000"
+                  mode="text"
+                  onPress={() => setShowComment(false)}
+                />
+              </View>
+              <Title style={{textAlign: 'center', marginTop: -10}}>
+                Comment on Post
+              </Title>
+              <View style={styles.termsContainer}>
+                <TextInput
+                  mode="outlined"
+                  style={{
+                    color: '#fff',
+                    width: '80%',
+                    backgroundColor: '#FFF',
+                    height: 50,
+                    alignSelf: 'center',
+                  }}
+                  onChangeText={setAddComment}
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                }}>
+                <Button
+                  style={{marginTop: 10}}
+                  mode="contained"
+                  color="blue"
+                  onPress={() => submitComment()}>
+                  <Text style={{color: '#FFF'}}>Submit</Text>
+                </Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        {/* COMMENT ON POST END */}
 
         <Modal transparent={true} visible={visible}>
           <View style={styles.modalBackground}>
@@ -412,6 +474,18 @@ const IndividualTrade = () => {
         <Picker.Item label="Item sold" value={1} />
         <Picker.Item label="Other reasons" value={1} />
       </Picker>
+      <FAB
+        style={styles.fab}
+        icon="comment"
+        color="#FFF"
+        onPress={() => setShowComment(true)}
+      />
+      <Snackbar
+        visible={snackBarVisible}
+        duration={3000}
+        onDismiss={() => setSnackBarVisible(false)}>
+        Comment added!
+      </Snackbar>
     </SafeAreaView>
   );
 };
@@ -530,6 +604,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#EB805F',
   },
 });
 

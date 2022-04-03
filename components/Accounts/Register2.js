@@ -40,6 +40,7 @@ const Register2 = () => {
 
   useEffect(() => {
     console.log(register.email);
+    console.log(register.password);
   }, []);
 
   //submit button

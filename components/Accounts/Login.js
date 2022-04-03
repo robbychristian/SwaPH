@@ -81,10 +81,8 @@ function Login() {
             user.isValidated = response.data.data[0].isValidated;
             console.log('no errors');
             setLoading(false);
+            navigation.navigate('HomeStack');
           }
-        })
-        .then(() => {
-          navigation.navigate('HomeStack');
         })
         .catch(e => {
           Alert.alert(

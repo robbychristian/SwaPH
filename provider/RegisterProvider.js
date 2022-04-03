@@ -29,8 +29,12 @@ const RegisterProvider = props => {
   const [isDeactivatedById, setIsDeactivatedById] = useState('');
 
   //FOR FILE IMAGES
-  const [id, setId] = useState({});
-  const [photoId, setPhotoId] = useState({});
+  const [id, setId] = useState([]);
+  const [idUrl, setIdUrl] = useState('');
+  const [idName, setIdName] = useState('');
+  const [photoId, setPhotoId] = useState([]);
+  const [photoIdUrl, setPhotoIdUrl] = useState('');
+  const [photoIdName, setPhotoIdName] = useState('');
 
   return (
     <RegisterContext.Provider
@@ -60,7 +64,11 @@ const RegisterProvider = props => {
         isDeactivated,
         isDeactivatedById,
         id,
+        idUrl,
+        idName,
         photoId,
+        photoIdUrl,
+        photoIdName,
         setFname,
         setLname,
         setBirthday,
@@ -86,7 +94,11 @@ const RegisterProvider = props => {
         setIsDeactivated,
         setIsDeactivatedById,
         setId,
+        setIdUrl,
+        setIdName,
         setPhotoId,
+        setPhotoIdUrl,
+        setPhotoIdName,
       }}>
       {props.children}
     </RegisterContext.Provider>

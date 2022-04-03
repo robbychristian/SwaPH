@@ -65,8 +65,8 @@ const Register4 = () => {
     requestCameraPermission();
     console.log('updated:' + JSON.stringify(id));
 
-    console.log(register.id);
-    console.log(register.validIdLink);
+    console.log(register.idUrl);
+    console.log(register.idName);
   }, [id]);
 
   const validID = () => {
@@ -87,7 +87,8 @@ const Register4 = () => {
         alert(response.customButton);
       } else {
         register.id = response;
-        register.validIdLink = response.assets[0].uri;
+        register.idUrl = response.assets[0].uri;
+        register.idName = response.assets[0].fileName;
         setId(response);
         setIsImageSet(true);
         setIdUri(response.assets[0].uri);

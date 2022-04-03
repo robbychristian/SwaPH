@@ -50,7 +50,7 @@ const Register = () => {
       Alert.alert('Password Mismatch', 'The passwords does not match!');
     } else {
       register.email = email;
-      register.pass = pass;
+      register.password = pass;
       navigation.navigate('SecondRegister');
     }
   };

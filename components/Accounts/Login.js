@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, CommonActions} from '@react-navigation/native';
 import {UserContext} from '../../provider/UserProvider';
 import axios from 'axios';
 
@@ -81,7 +81,12 @@ function Login() {
             user.isValidated = response.data.data[0].isValidated;
             console.log('no errors');
             setLoading(false);
-            navigation.navigate('HomeStack');
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: 'HomeStack'}],
+              }),
+            );
           }
         })
         .catch(e => {

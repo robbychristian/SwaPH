@@ -134,28 +134,32 @@ const IndividualAuction = () => {
 
   //CREATING MEESAGE THROUGH PM
   const createMessage = () => {
-    setLoading(true);
-    const formData = new FormData();
-    formData.append('user_id', user.id);
-    formData.append('receiverID', traderId);
-    formData.append('message', message);
-    axios
-      .post('https://swapph.online/restapi/CreateNewMessage', formData)
-      .then(response => {
-        setLoading(false);
-        navigation.navigate('Chat', {
-          chatId: response.data,
-          receiverID: traderId,
-          senderID: parseInt(user.id),
+    if (message == '') {
+      Alert.alert('Invalid Comment!', 'Your comment should not be empty!');
+    } else {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('user_id', user.id);
+      formData.append('receiverID', traderId);
+      formData.append('message', message);
+      axios
+        .post('https://swapph.online/restapi/CreateNewMessage', formData)
+        .then(response => {
+          setLoading(false);
+          navigation.navigate('Chat', {
+            chatId: response.data,
+            receiverID: traderId,
+            senderID: parseInt(user.id),
+          });
+        })
+        .catch(e => {
+          Alert.alert(
+            'Error!',
+            'There was an error sending your message. Make sure you have internet connection!',
+          );
+          setLoading(false);
         });
-      })
-      .catch(e => {
-        Alert.alert(
-          'Error!',
-          'There was an error sending your message. Make sure you have internet connection!',
-        );
-        setLoading(false);
-      });
+    }
   };
 
   useEffect(() => {
@@ -204,7 +208,7 @@ const IndividualAuction = () => {
                 <Button
                   style={{marginTop: 10}}
                   mode="contained"
-                  color="blue"
+                  color="#FD7644"
                   onPress={() => submitBid()}>
                   <Text style={{color: '#FFF'}}>Submit</Text>
                 </Button>
@@ -260,7 +264,7 @@ const IndividualAuction = () => {
                 <Button
                   style={{marginTop: 10}}
                   mode="contained"
-                  color="blue"
+                  color="#FD7644"
                   onPress={() => submitComment()}>
                   <Text style={{color: '#FFF'}}>Submit</Text>
                 </Button>
@@ -294,9 +298,9 @@ const IndividualAuction = () => {
                   <Text style={{color: 'gray'}}>Cancel</Text>
                 </Button>
                 <Button
-                  style={{marginTop: 10, backgroundColor: '#4B3299'}}
+                  style={{marginTop: 10}}
                   mode="contained"
-                  color="blue"
+                  color="#FD7644"
                   onPress={() => createMessage()}>
                   <Text style={{color: '#FFF'}}>Submit</Text>
                 </Button>

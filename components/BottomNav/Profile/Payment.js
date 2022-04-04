@@ -69,7 +69,7 @@ const Payment = () => {
           to pay for the auction you won!
         </Paragraph>
       </View>
-      {setScreenReady == true ? (
+      {setScreenReady ? (
         <View>
           {post.map((info, id) => {
             return (

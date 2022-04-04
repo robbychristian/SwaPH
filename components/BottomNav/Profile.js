@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {Avatar, FAB, Paragraph} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/dist/MaterialCommunityIcons';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, CommonActions} from '@react-navigation/native';
 import {UserContext} from '../../provider/UserProvider';
 
 const Profile = () => {
@@ -105,7 +105,16 @@ const Profile = () => {
             color="#EB805F"
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionContainer}>
+        <TouchableOpacity
+          style={styles.optionContainer}
+          onPress={() => {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: 'Login'}],
+              }),
+            );
+          }}>
           <Icon name="logout" size={30} color="#EB805F" style={{flex: 0.2}} />
           <Paragraph style={{flex: 0.7, color: '#FD7644'}}>Logout</Paragraph>
           <Icon
